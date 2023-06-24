@@ -8,7 +8,7 @@
 <body>
     <h1>ホームページ</h1>
 
-    <div class="test">
+    <div class="home">
         <form method="POST" action="{{ route('api.post') }}">
             @csrf
             <div>

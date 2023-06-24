@@ -4,41 +4,47 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    public $timestamps = false;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    // 与えられたidと一致するユーザーを返す
+    static function getUserById($id)
+    {
+        return self::find($id);
+    }
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    //認証システムで使われるメソッド
+    public function getAuthIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    //  データベース内に同じidを持ったユーザーがいないかを確認
+    static function CheckUserId($id)
+    {
+        $user = self::find($id);
+        if (empty($user)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    //ユーザー情報を追加する
+    static function registerUser($id, $nickname, $pwd)
+    {
+        $pwd = password_hash($pwd, PASSWORD_BCRYPT);
+        $user = new User;
+        $user->id = $id;
+        $user->nickname = $nickname;
+        $user->pwd = $pwd;
+        $user->save();
+        return true;
+    }
 }

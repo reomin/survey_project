@@ -21,5 +21,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group(['middleware' => 'api'], function () {
+    Route::post('login/post', "App\Http\Controllers\LoginController@post")->name("login.post");
+});
+
+Route::group(['middleware' => 'api'], function () {
     Route::post('api/post', "App\Http\Controllers\HomeController@post")->name("api.post");
+});
+
+Route::group(['middleware' => 'api'], function () {
+    Route::get('/login', "App\Http\Controllers\HomeController@get")->name("login.get");
+});
+
+Route::group(['middleware' => 'api'], function () {
+    Route::post('/api/register', "App\Http\Controllers\RegisterController@post")->name("register.post");
 });
