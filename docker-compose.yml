@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  project:
+    build:
+      context: .
+      dockerfile: ./project/Dockerfile
+    ports:
+      - "8000:8080"
+    volumes:
+      - ./project/src:/var/www
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: bulletin-board
+      MYSQL_ROOT_PASSWORD: password
+
+  phpmyadmin:
+    image: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: password
+      MEMORY_LIMIT: 512M
+      UPLOAD_LIMIT: 512M
+    ports:
+      - "8080:80"
+  maildev:
+    image: maildev/maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+volumes:
+  mysql-volume:
