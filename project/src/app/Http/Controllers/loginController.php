@@ -21,15 +21,15 @@ class LoginController extends Controller
             $result = password_verify($pwd, $user["pwd"]);
             if ($result) {
                 $is_success = true;
-                //セッションに情報を格納する
-                Session::put('user', $user);
-                return $is_success;
+                // セッションに情報を格納する
+                Session::put('key', 'value');
             } else {
-                echo "パスワードがあっていません";
+                echo "パスワードが間違っています";
             }
         } else {
             echo "ユーザーが見つかりません";
         }
+
         return $is_success;
     }
 
@@ -41,14 +41,28 @@ class LoginController extends Controller
 
         if ($result) {
             echo "ログイン成功";
-            $user = Session::get('user');
-            echo $user;
+
+            session()->regenerate();
+            $value = session('user');
+            session(['key' => 'value']);
+            var_dump($value);
+            return redirect("/");
+
+            echo session('user');
         } else {
-            echo "ログインに失敗しました。";
+            $value = session('key');
+            var_dump($value);
         }
     }
 
-    function get()
+
+    function get(Request $request)
     {
+        $data = $request->session()->all();
+        $value = session('user');
+        $value = Session::get('key');
+        var_dump($value);
+        var_dump($data);
+        return view("login");
     }
 }

@@ -4,14 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
     //
-    function post()
+    function post(Request $request)
     {
-        $users = User::all();
+        $data = $request->session()->all();
+        var_dump($data);
 
-        echo $users;
+        die;
+    }
+
+    function get(Request $request)
+    {
+        $data = $request->session()->all();
+        $value = session('user');
+        $key = session('key');
+        var_dump($value);
+        var_dump($key);
+        return view("home");
     }
 }

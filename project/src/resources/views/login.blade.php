@@ -23,6 +23,7 @@
                 <button type="submit">送信</button>
             </div>
         </form>
+        <p>{{ session('user') }}</p>
     </div>
 </body>
 

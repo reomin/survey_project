@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// セッションを使用するルート定義
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

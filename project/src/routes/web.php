@@ -13,16 +13,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group(['middleware' => ['web']], function () {
+    // ルート定義を記述する
 
-Route::get('/login', function () {
-    return view('login');
-});
+    Route::get('/login', 'App\Http\Controllers\LoginController@get', function () {
+        return view('login');
+    });
 
+    Route::get('/register', function () {
+        return view('register');
+    });
 
-Route::get('/register', function () {
-    return view('register');
-});
-
-Route::get('/', function () {
-    return view('home');
+    Route::get('/', 'App\Http\Controllers\HomeController@get', function () {
+        return view('home');
+    });
 });

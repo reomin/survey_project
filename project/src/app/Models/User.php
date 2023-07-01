@@ -2,49 +2,50 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+class User extends Authenticatable
 {
+    use Notifiable;
+
+    protected $table = 'users'; // テーブル名を指定
+
+    protected $primaryKey = 'id'; // 主キーを指定
+
     public $timestamps = false;
 
+    protected $fillable = [
+        'id',
+        'nickname',
+        'password',
+    ];
 
-    // 与えられたidと一致するユーザーを返す
-    static function getUserById($id)
+    protected $hidden = [
+        'password',
+    ];
+
+    // ユーザー情報を追加する
+    public static function RegisterUser($id, $nickname, $password)
+    {
+        $user = new User();
+        $user->id = $id;
+        $user->nickname = $nickname;
+        $user->password = bcrypt($password); // パスワードのハッシュ化
+        $user->save();
+
+        return $user;
+    }
+
+    // IDに基づいてユーザーを取得する
+    public static function getUserById($id)
     {
         return self::find($id);
     }
 
-    //認証システムで使われるメソッド
-    public function getAuthIdentifier()
+    // IDが存在するかを確認する
+    public static function CheckUserId($id)
     {
-        return $this->getKey();
-    }
-
-    //  データベース内に同じidを持ったユーザーがいないかを確認
-    static function CheckUserId($id)
-    {
-        $user = self::find($id);
-        if (empty($user)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    //ユーザー情報を追加する
-    static function registerUser($id, $nickname, $pwd)
-    {
-        $pwd = password_hash($pwd, PASSWORD_BCRYPT);
-        $user = new User;
-        $user->id = $id;
-        $user->nickname = $nickname;
-        $user->pwd = $pwd;
-        $user->save();
-        return true;
+        return self::where('id', $id)->exists();
     }
 }
